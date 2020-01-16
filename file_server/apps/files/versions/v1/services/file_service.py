@@ -3,8 +3,10 @@ import os
 from django.conf import settings
 from django.utils.translation import gettext as _
 
+from file_server.apps.files.models import File
 from file_server.apps.files.versions.v1.serializers.serializers import (
     FileSerializer,
+    FilesSerializer,
 )
 from file_server.core import api_exceptions
 
@@ -46,7 +48,15 @@ class FileService:
 
     @classmethod
     def get_files(cls, request):
-        pass
+        files = File.objects.filter(
+            owner=request.user,
+        )
+        files_serializer = FilesSerializer(
+            files,
+            many=True
+        )
+
+        return files_serializer.data
 
     @classmethod
     def generate_user_token(

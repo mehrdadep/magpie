@@ -22,6 +22,7 @@ class File(models.Model):
         null=True,
     )
     file = models.FileField(upload_to=get_file_path)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class UserToken(models.Model):
