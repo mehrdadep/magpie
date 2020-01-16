@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = "==3.0.2"
+djangorestframework = "==3.10.*"
+django-filter = "==2.2.*"
+requests = "==2.22.*"
+psycopg2-binary = "==2.8.*"
+python-memcached = "==1.59.*"
+djangorestframework-jwt = "==1.11.*"
+uuid = "==1.*"
+uwsgi = "==2.*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7.5"

@@ -1,0 +1,76 @@
+# PyCharm IDE.
+.idea/
+file_server/.idea/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+venv
+*.pyc
+staticfiles
+static
+*/staticfiles
+*/static
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+dist/
+static/*
+staticfiles/*
+# Translations
+*.pot
+*.mo
+
+# Django stuff
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+reports/
+
+# nss stuff
+!file_server/log/file_server/
+file_server/log/file_server/*
+
+!file_server/tmp/upload/
+file_server/tmp/upload/*
+!file_server/tmp/session/
+file_server/tmp/session/*
+
+file_server/settings/local.env
+datetime
+django.contrib.auth
+dump.rdb
+Pipfile.lock
+
+!.keep
+!.gitignore
+*~
+file_server/files/*
+files/*
+.directory
+
+# Migration Files.
+file_server/**/migrations/*.py
+!file_server/**/migrations/__init__.py
+runserver.sh
