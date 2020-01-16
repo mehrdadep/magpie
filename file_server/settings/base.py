@@ -166,12 +166,8 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 
-MEDIA_URL = '/files/'
-MEDIA_ROOT = os.path.join(
-    BASE_DIR, os.pardir,
-    'file_server',
-    'files',
-)
+MEDIA_URL = os.getenv('FILE_SERVER_MEDIA_URL', '/files/')
+MEDIA_ROOT = os.getenv('FILE_SERVER_MEDIA_ROOT', '/var/share/file_server/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

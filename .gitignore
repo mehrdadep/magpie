@@ -66,8 +66,6 @@ Pipfile.lock
 !.keep
 !.gitignore
 *~
-file_server/files/*
-files/*
 .directory
 
 # Migration Files.
