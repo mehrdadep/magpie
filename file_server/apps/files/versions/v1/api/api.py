@@ -2,7 +2,6 @@ from django.views.static import serve
 from rest_framework import exceptions, status
 from rest_framework.parsers import (
     MultiPartParser,
-    FormParser,
 )
 from rest_framework.views import APIView
 
@@ -15,7 +14,7 @@ from file_server.core.response import response
 
 class FilesAPIView(APIView):
     permission_classes = (UploadDownloadAPIUserPermission,)
-    parser_classes = (FormParser, MultiPartParser,)
+    parser_classes = (MultiPartParser,)
 
     def post(
             self,

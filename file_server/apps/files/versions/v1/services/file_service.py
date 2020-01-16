@@ -14,14 +14,12 @@ class FileService:
     def upload_file(cls, request):
         file = request.FILES['file']
         # Check if file is greater than max upload size
-        if file.size > settings.FILE_SERVER['MAX_UPLOAD_SIZE']:
+        if float(file.size) > float(settings.FILE_SERVER['MAX_UPLOAD_SIZE']):
             raise api_exceptions.ValidationError400({
                 'file_size': _('File is larger than expected'),
                 'max_size': settings.FILE_SERVER['MAX_UPLOAD_SIZE'],
             })
-
         request.data['owner'] = request.user.id
-
         serializer = FileSerializer(
             data=request.data,
         )
