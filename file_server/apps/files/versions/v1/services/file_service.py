@@ -32,19 +32,22 @@ class FileService:
     @classmethod
     def download_file(cls, request, file_id):
         # Ensure that the file belongs to logged on user
-        if int(file_id) == request.user.id:
-            user = request.user
-            # get file path and serve to user
-            path = os.getcwd() + request.get_full_path()
 
-            return (
-                os.path.basename(path),
-                os.path.dirname(path),
+        try:
+            file_object = File.objects.get(
+                file_id=file_id,
+                owner=request.user,
             )
+        except File.DoesNotExist:
+            raise api_exceptions.NotFound404(
+                _('File does not exists or does not belongs to this user'),
+            )
+        path = file_object.file.path
 
-        raise api_exceptions.NotFound404({
-            'file_size': _('File is larger than expected'),
-        })
+        return (
+            os.path.basename(path),
+            os.path.dirname(path),
+        )
 
     @classmethod
     def get_files(cls, request):
