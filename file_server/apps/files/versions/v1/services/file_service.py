@@ -1,5 +1,6 @@
 import os
 
+import uuid
 from django.conf import settings
 from django.utils.translation import gettext as _
 
@@ -9,6 +10,7 @@ from file_server.apps.files.versions.v1.serializers.serializers import (
     FilesSerializer,
 )
 from file_server.core import api_exceptions
+from file_server.core.cache import Cache
 
 
 class FileService:
@@ -31,17 +33,32 @@ class FileService:
 
     @classmethod
     def download_file(cls, request, file_id):
-        # Ensure that the file belongs to logged on user
-
         try:
-            file_object = File.objects.get(
-                file_id=file_id,
-                owner=request.user,
+            if not isinstance(file_id, uuid.UUID):
+                file_id = uuid.UUID(file_id)
+        except ValueError:
+            raise api_exceptions.ValidationError400(
+                {
+                    'id': _('Not a valid UUID')
+                }
             )
-        except File.DoesNotExist:
-            raise api_exceptions.NotFound404(
-                _('File does not exists or does not belongs to this user'),
-            )
+        file_object = Cache.get(str(f"file_id:{file_id}"))
+
+        if not file_object:
+            try:
+                file_object = File.objects.get(
+                    file_id=file_id,
+                    owner=request.user,
+                )
+                Cache.set(
+                    key=str(f"file_id:{file_id}"),
+                    store_value=file_object,
+                    expiry_time=settings.FILE_SERVER['CACHE_EXPIRY'],
+                )
+            except File.DoesNotExist:
+                raise api_exceptions.NotFound404(
+                    _('File does not exists or does not belongs to this user'),
+                )
         path = file_object.file.path
 
         return (

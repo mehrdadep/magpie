@@ -17,6 +17,7 @@ class FilesSerializer(ModelSerializer):
         model = File
         fields = (
             'file_id',
+            'file_name',
             'owner',
             'created_at',
         )

@@ -1,4 +1,5 @@
 import os
+import uuid
 from datetime import datetime
 
 from django.contrib.auth.models import User
@@ -14,7 +15,7 @@ def get_file_path(instance, filename):
 
 
 class File(models.Model):
-    file_id = models.AutoField(primary_key=True)
+    file_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     owner = models.ForeignKey(
         User,
         related_name='files',
@@ -23,6 +24,10 @@ class File(models.Model):
     )
     file = models.FileField(upload_to=get_file_path)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def file_name(self):
+        return os.path.basename(self.file.name)
 
 
 class UserToken(models.Model):

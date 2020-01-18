@@ -1,12 +1,23 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
 from django.utils.translation import gettext as _
 
 from file_server.apps.files.models import File
 from file_server.apps.files.models import UserToken
 
-admin.site.register(File)
-# admin.site.register(UserToken)
+
+@admin.register(File)
+class FileAdmin(admin.ModelAdmin):
+    date_hierarchy = 'created_at'
+    search_fields = ['service_name', 'method_name']
+    list_display = (
+        'file_id',
+        'file',
+        'owner',
+        'created_at',
+    )
+    readonly_fields = [
+        'created_at',
+    ]
 
 
 @admin.register(UserToken)
@@ -19,6 +30,10 @@ class UserTokenAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
     )
+    readonly_fields = [
+        'created_at',
+        'updated_at',
+    ]
     fieldsets = (
         ('Base Information', {
             'fields': (
@@ -28,8 +43,8 @@ class UserTokenAdmin(admin.ModelAdmin):
         }),
         ('Dates', {
             'fields': (
-                'last_login',
-                'date_joined',
+                'created_at',
+                'updated_at',
             ),
         }),
     )
