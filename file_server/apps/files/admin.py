@@ -8,7 +8,7 @@ from file_server.apps.files.models import UserToken
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    search_fields = ['service_name', 'method_name']
+    search_fields = ['owner__username']
     list_display = (
         'file_id',
         'file',
