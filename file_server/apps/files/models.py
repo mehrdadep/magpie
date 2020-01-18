@@ -33,6 +33,17 @@ class File(models.Model):
     def owner_username(self):
         return os.path.basename(self.owner.username)
 
+    @classmethod
+    def model_field_exists(cls, field):
+        try:
+            cls._meta.get_field(field)
+            return True
+        except models.FieldDoesNotExist:
+            return False
+
+    class Meta:
+        ordering = ['-created_at']
+
 
 class ApiKey(models.Model):
     owner = models.ForeignKey(
@@ -49,3 +60,6 @@ class ApiKey(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']

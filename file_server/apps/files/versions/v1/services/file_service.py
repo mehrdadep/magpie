@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -70,11 +71,68 @@ class FileService:
 
     @classmethod
     def get_files(cls, request):
-        files = File.objects.filter(
+        files_query = File.objects.filter(
             owner=request.user,
         )
+
+        if request.query_params is not None:
+            if 'created_at_from' in request.query_params:
+                try:
+                    created_at_from = datetime.fromtimestamp(
+                        float(request.query_params['created_at_from'])
+                    )
+                    files_query = files_query.filter(
+                        created_at__gte=created_at_from
+                    )
+                except ValueError:
+                    raise api_exceptions.ValidationError400(
+                        detail={
+                            'created_at_from': _("Datetime parsing error")
+                        }
+                    )
+
+            if 'created_at_to' in request.query_params:
+                try:
+                    created_at_to = datetime.fromtimestamp(
+                        float(request.query_params['created_at_to'])
+                    )
+                    files_query = files_query.filter(
+                        created_at__lte=created_at_to
+                    )
+                except ValueError:
+                    raise api_exceptions.ValidationError400(
+                        detail={
+                            'created_at_to': _("Datetime parsing error")
+                        }
+                    )
+
+            # Order by
+            if 'order_by' in request.query_params:
+                order_field_error = []
+                order_by = [
+                    x.strip() for x in request.query_params
+                    ['order_by'].split(',')
+                ]
+                for order in order_by:
+                    if not File.model_field_exists(
+                            order.replace('-', ''),
+                    ):
+                        order_field_error.append(order)
+                if order_field_error:
+                    raise api_exceptions.ValidationError400(
+                        {
+                            'non_fields': _("Invalid choices in order by "
+                                            "query"),
+                            'errors': order_field_error,
+                        }
+                    )
+
+                files_query = files_query.order_by(
+                    *order_by
+                )
+
         files_serializer = FilesSerializer(
-            files,
+            files_query,
             many=True
         )
 
