@@ -4,6 +4,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.utils.translation import gettext as _
+from rest_framework.pagination import LimitOffsetPagination
 
 from file_server.apps.files.models import File
 from file_server.apps.files.versions.v1.serializers.serializers import (
@@ -154,12 +155,14 @@ class FileService:
                     *order_by
                 )
 
+        paginator = LimitOffsetPagination()
+        files_query = paginator.paginate_queryset(files_query, request)
         files_serializer = FilesSerializer(
             files_query,
             many=True
         )
 
-        return files_serializer.data
+        return files_serializer.data, paginator
 
     @classmethod
     def delete_file(cls, request, file_id):
