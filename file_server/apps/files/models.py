@@ -29,14 +29,23 @@ class File(models.Model):
     def file_name(self):
         return os.path.basename(self.file.name)
 
+    @property
+    def owner_username(self):
+        return os.path.basename(self.owner.username)
 
-class UserToken(models.Model):
+
+class ApiKey(models.Model):
     owner = models.ForeignKey(
         User,
-        related_name='tokens',
+        related_name='api_keys',
         on_delete=models.CASCADE,
         null=False,
     )
-    user_token = models.CharField(max_length=128, null=False, blank=False)
+    api_key = models.CharField(
+        max_length=128,
+        null=False,
+        blank=False,
+        default=uuid.uuid4().hex,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

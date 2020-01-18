@@ -1,8 +1,9 @@
+import uuid
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
 from file_server.apps.files.models import File
-from file_server.apps.files.models import UserToken
+from file_server.apps.files.models import ApiKey
 
 
 @admin.register(File)
@@ -20,17 +21,18 @@ class FileAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(UserToken)
-class UserTokenAdmin(admin.ModelAdmin):
+@admin.register(ApiKey)
+class ApiKeyAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    search_fields = ['service_name', 'method_name']
+    search_fields = ['api_key', 'owner__username']
     list_display = (
         'owner',
-        'user_token',
+        'api_key',
         'created_at',
         'updated_at',
     )
     readonly_fields = [
+        'api_key',
         'created_at',
         'updated_at',
     ]
@@ -38,7 +40,7 @@ class UserTokenAdmin(admin.ModelAdmin):
         ('Base Information', {
             'fields': (
                 'owner',
-                'user_token',
+                'api_key',
             ),
         }),
         ('Dates', {
@@ -51,12 +53,16 @@ class UserTokenAdmin(admin.ModelAdmin):
 
     list_per_page = 20
 
-    actions = ['add_token', ]
+    actions = ['update_token', ]
 
-    def add_token(self, request, queryset):
+    def update_token(self, request, queryset):
+        for api_key in queryset:
+            api_key.api_key = uuid.uuid4().hex
+            api_key.save()
+
         self.message_user(
             request,
-            _("Token is created/updated successfully"),
+            _("Token is updated successfully"),
         )
 
-    add_token.short_description = _('Add/Update token')
+    update_token.short_description = _('Update token')

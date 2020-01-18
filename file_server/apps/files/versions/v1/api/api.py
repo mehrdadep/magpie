@@ -79,3 +79,23 @@ class FileAPIView(APIView):
             response_data[0],
             response_data[1],
         )
+
+    def delete(
+            self,
+            request,
+            file_id,
+            *args,
+            **kwargs,
+    ):
+        try:
+            FileService.delete_file(
+                request,
+                file_id,
+            )
+        except exceptions.APIException as e:
+            return response(request, error=e.detail, status=e.status_code)
+
+        return response(
+            request,
+            status=status.HTTP_204_NO_CONTENT,
+        )

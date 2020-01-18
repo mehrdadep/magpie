@@ -1,6 +1,6 @@
 import os
-
 import uuid
+
 from django.conf import settings
 from django.utils.translation import gettext as _
 
@@ -42,7 +42,9 @@ class FileService:
                     'id': _('Not a valid UUID')
                 }
             )
-        file_object = Cache.get(str(f"file_id:{file_id}"))
+        file_object = Cache.get(
+            str(f"file_id:{file_id}-user_id:{request.user.id}"),
+        )
 
         if not file_object:
             try:
@@ -51,7 +53,7 @@ class FileService:
                     owner=request.user,
                 )
                 Cache.set(
-                    key=str(f"file_id:{file_id}"),
+                    key=str(f"file_id:{file_id}-user_id:{request.user.id}"),
                     store_value=file_object,
                     expiry_time=settings.FILE_SERVER['CACHE_EXPIRY'],
                 )
@@ -79,8 +81,32 @@ class FileService:
         return files_serializer.data
 
     @classmethod
-    def generate_user_token(
-            cls,
-            user_id,
-    ):
-        pass
+    def delete_file(cls, request, file_id):
+        try:
+            if not isinstance(file_id, uuid.UUID):
+                file_id = uuid.UUID(file_id)
+        except ValueError:
+            raise api_exceptions.ValidationError400(
+                {
+                    'id': _('Not a valid UUID')
+                }
+            )
+
+        try:
+            file_object = File.objects.get(
+                file_id=file_id,
+                owner=request.user,
+            )
+        except File.DoesNotExist:
+            raise api_exceptions.NotFound404(
+                _('File does not exists or does not belongs to this user'),
+            )
+
+        Cache.delete(
+            key=str(f"file_id:{file_id}-user_id:{request.user.id}"),
+        )
+
+        file_object.file.delete()
+        file_object.delete()
+
+        return True
