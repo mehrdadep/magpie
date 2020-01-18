@@ -18,11 +18,6 @@ from file_server.core.cache import Cache
 class FileService:
     @classmethod
     def upload_file(cls, request):
-        if 'file' not in request.FILES:
-            raise api_exceptions.Conflict409(
-                _("Key 'file' is not found in files")
-            )
-
         file_keys = dict(request.FILES).keys()
         done_files_count = 0
         for file_key in file_keys:
