@@ -21,6 +21,7 @@ class FileAdmin(admin.ModelAdmin):
     readonly_fields = [
         'created_at',
     ]
+    list_per_page = 10
 
     def delete_queryset(self, request, queryset):
         for delete_object in queryset:
@@ -58,7 +59,7 @@ class ApiKeyAdmin(admin.ModelAdmin):
         }),
     )
 
-    list_per_page = 20
+    list_per_page = 10
 
     actions = ['update_token', ]
 
