@@ -18,4 +18,7 @@ This file server is used to upload and download files using `REST APIs`
 - `pipenv shell`
 - `python manage.py runserver`
 
-
+### Usage
+File server uses `API key` to handle authentication and authorization, each user should have a `API key` and use it in `HTTP_Authorization` with this format:
+`ApiKey-Files API_KEY`. e.g.:
+- `curl -F file=@/home/file.zip http://fileserver.example/api/v1/files/ -H "Authorization: ApiKey-Files 5440d70ba9044e8a983d1f30e68fa031"`
