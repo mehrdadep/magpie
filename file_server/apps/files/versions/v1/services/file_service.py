@@ -17,20 +17,41 @@ from file_server.core.cache import Cache
 class FileService:
     @classmethod
     def upload_file(cls, request):
-        file = request.FILES['file']
-        # Check if file is greater than max upload size
-        if float(file.size) > float(settings.FILE_SERVER['MAX_UPLOAD_SIZE']):
-            raise api_exceptions.ValidationError400({
-                'file_size': _('File is larger than expected'),
-                'max_size': f"{settings.FILE_SERVER['MAX_UPLOAD_SIZE']} bytes",
-            })
-        request.data['owner'] = request.user.id
-        serializer = FileSerializer(
-            data=request.data,
-        )
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return True
+        if 'file' not in request.FILES:
+            raise api_exceptions.Conflict409(
+                _("Key 'file' is not found in files")
+            )
+        file_keys = dict(request.FILES).keys()
+        done_files_count = 0
+        for file_key in file_keys:
+            file_data = {}
+            file = request.FILES[file_key]
+            file_data['file'] = request.data[file_key]
+            file_data['owner'] = request.user.id
+
+            # Check if file is greater than max upload size
+            if float(file.size) > float(
+                    settings.FILE_SERVER['MAX_UPLOAD_SIZE']):
+                raise api_exceptions.ValidationError400({
+                    'file_size': _('File is larger than expected'),
+                    'max_size': f"{settings.FILE_SERVER['MAX_UPLOAD_SIZE']} "
+                                f"bytes",
+                })
+
+            serializer = FileSerializer(
+                data=file_data,
+            )
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                done_files_count += 1
+
+        upload_message = _("Count of uploaded files")
+
+        return {
+            "message": f"{upload_message}: {done_files_count}",
+            "count": done_files_count,
+        }
 
     @classmethod
     def download_file(cls, request, file_id):

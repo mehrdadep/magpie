@@ -1,9 +1,10 @@
 import uuid
+
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from file_server.apps.files.models import File
 from file_server.apps.files.models import ApiKey
+from file_server.apps.files.models import File
 
 
 @admin.register(File)
@@ -19,6 +20,11 @@ class FileAdmin(admin.ModelAdmin):
     readonly_fields = [
         'created_at',
     ]
+
+    def delete_queryset(self, request, queryset):
+        for delete_object in queryset:
+            delete_object.file.delete()
+            delete_object.delete()
 
 
 @admin.register(ApiKey)
