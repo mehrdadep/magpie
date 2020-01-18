@@ -196,7 +196,7 @@ STATIC_ROOT = os.path.join(
 # 100MB 104857600
 # 250MB - 214958080
 # 500MB - 429916160
-
+# MAX_UPLOAD_SIZE represented in bytes
 FILE_SERVER = {
     'CACHE_EXPIRY': int(os.getenv(
         'FILE_SERVER_CACHE_EXPIRY',

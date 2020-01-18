@@ -22,7 +22,7 @@ class FileService:
         if float(file.size) > float(settings.FILE_SERVER['MAX_UPLOAD_SIZE']):
             raise api_exceptions.ValidationError400({
                 'file_size': _('File is larger than expected'),
-                'max_size': settings.FILE_SERVER['MAX_UPLOAD_SIZE'],
+                'max_size': f"{settings.FILE_SERVER['MAX_UPLOAD_SIZE']} bytes",
             })
         request.data['owner'] = request.user.id
         serializer = FileSerializer(
