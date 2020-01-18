@@ -22,12 +22,14 @@ class File(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
+    file_name = models.CharField(
+        max_length=512,
+        null=False,
+        blank=False,
+        default=uuid.uuid4().hex,
+    )
     file = models.FileField(upload_to=get_file_path)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def file_name(self):
-        return os.path.basename(self.file.name)
 
     @property
     def owner_username(self):

@@ -8,6 +8,7 @@ class FileSerializer(ModelSerializer):
         model = File
         fields = (
             'owner',
+            'file_name',
             'file',
         )
 

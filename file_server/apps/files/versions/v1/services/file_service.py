@@ -21,6 +21,7 @@ class FileService:
             raise api_exceptions.Conflict409(
                 _("Key 'file' is not found in files")
             )
+
         file_keys = dict(request.FILES).keys()
         done_files_count = 0
         for file_key in file_keys:
@@ -28,6 +29,7 @@ class FileService:
             file = request.FILES[file_key]
             file_data['file'] = request.data[file_key]
             file_data['owner'] = request.user.id
+            file_data['file_name'] = request.FILES[file_key].name
 
             # Check if file is greater than max upload size
             if float(file.size) > float(

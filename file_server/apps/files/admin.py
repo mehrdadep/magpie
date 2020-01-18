@@ -14,6 +14,7 @@ class FileAdmin(admin.ModelAdmin):
     list_display = (
         'file_id',
         'file',
+        'file_name',
         'owner',
         'created_at',
     )
