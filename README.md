@@ -94,7 +94,9 @@ import requests
 url = "http://127.0.0.1:9596/api/v1/files/5e740209-0dde-483a-b542-bf1ea153446b/"
 
 payload = ""
-headers = {'authorization': '123456'}
+headers = {
+    'authorization': "ApiKey-Files 5440d70ba9044e8a983d1f30e68fa031",
+}
 
 response = requests.request("DELETE", url, data=payload, headers=headers)
 
