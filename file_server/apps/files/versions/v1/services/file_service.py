@@ -18,13 +18,8 @@ from file_server.core.cache import Cache
 class FileService:
     @classmethod
     def upload_file(cls, request):
-        if 'file' not in request.FILES:
-            raise api_exceptions.Conflict409(
-                _("Key 'file' is not found in files")
-            )
-
         file_keys = dict(request.FILES).keys()
-        done_files_count = 0
+        uploaded_files = []
         for file_key in file_keys:
             file_data = {}
             file = request.FILES[file_key]
@@ -41,19 +36,22 @@ class FileService:
                                 f"bytes",
                 })
 
-            serializer = FileSerializer(
+            file_serializer = FileSerializer(
                 data=file_data,
             )
 
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                done_files_count += 1
+            if file_serializer.is_valid(raise_exception=True):
+                file_serializer.save()
+                uploaded_files.append(
+                    file_serializer.data
+                )
 
         upload_message = _("Count of uploaded files")
-
+        done_files_count = len(uploaded_files)
         return {
             "message": f"{upload_message}: {done_files_count}",
             "count": done_files_count,
+            "files": uploaded_files,
         }
 
     @classmethod

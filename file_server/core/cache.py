@@ -4,7 +4,6 @@
 # Note: always use get_key method before other methods to get correct keys
 # based on KEY_CONVENTIONS.
 # (C) 2019 MehrdadEP, Tehran, Iran
-# Respina Networks and beyonds - cache.py
 # Created at 2020-01-16,  10:06:16
 # Author: MehrdadEP
 # Email: mehrdadep@outlook.com

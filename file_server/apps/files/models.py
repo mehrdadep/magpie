@@ -48,7 +48,7 @@ class File(models.Model):
 
 
 class ApiKey(models.Model):
-    owner = models.ForeignKey(
+    owner = models.OneToOneField(
         User,
         related_name='api_keys',
         on_delete=models.CASCADE,

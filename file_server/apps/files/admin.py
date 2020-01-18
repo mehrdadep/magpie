@@ -10,7 +10,7 @@ from file_server.apps.files.models import File
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    search_fields = ['owner__username']
+    search_fields = ['owner__username', 'file_name']
     list_display = (
         'file_id',
         'file',
@@ -21,6 +21,7 @@ class FileAdmin(admin.ModelAdmin):
     readonly_fields = [
         'created_at',
     ]
+    list_per_page = 10
 
     def delete_queryset(self, request, queryset):
         for delete_object in queryset:
@@ -58,7 +59,7 @@ class ApiKeyAdmin(admin.ModelAdmin):
         }),
     )
 
-    list_per_page = 20
+    list_per_page = 10
 
     actions = ['update_token', ]
 
