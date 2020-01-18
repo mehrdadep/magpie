@@ -10,7 +10,7 @@ from file_server.apps.files.models import File
 @admin.register(File)
 class FileAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    search_fields = ['owner__username']
+    search_fields = ['owner__username', 'file_name']
     list_display = (
         'file_id',
         'file',
