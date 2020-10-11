@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-Django = "==3.0.*"
-djangorestframework = "==3.10.*"
+Django = "==3.1.*"
+djangorestframework = "==3.11.*"
 django-filter = "==2.2.*"
 requests = "==2.22.*"
 psycopg2-binary = "==2.8.*"
@@ -17,4 +17,4 @@ uwsgi = "==2.*"
 [dev-packages]
 
 [requires]
-python_version = "3.7.5"
+python_version = "3.8"
