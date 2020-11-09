@@ -47,6 +47,12 @@ INSTALLED_APPS = [
 
     # File server Applications.
     'file_server.apps.files.apps.FilesConfig',
+
+    # Health check apps
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
 ]
 
 MIDDLEWARE = [
@@ -97,10 +103,15 @@ DATABASES = {
     },
 }
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': f"{os.getenv('FILE_SERVER_MEMCACHED_HOST')}:"
-                    f"{os.getenv('FILE_SERVER_MEMCACHED_PORT')}",
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"{os.getenv('FILE_SERVER_REDIS_HOST')}:"
+                    f"{os.getenv('FILE_SERVER_REDIS_PORT')}/"
+                    f"{os.getenv('FILE_SERVER_CACHE_DATABASE')}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": os.getenv('FILE_SERVER_CACHE_PREFIX')
     }
 }
 # Password validation

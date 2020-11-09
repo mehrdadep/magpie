@@ -11,6 +11,7 @@ admin.site.site_title = "File Server"
 admin.site.index_title = "File Server"
 
 urlpatterns = [
+    path('health-check/', include('health_check.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(api_urls)),
     path('web/', include(web_urls)),

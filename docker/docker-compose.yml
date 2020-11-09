@@ -1,0 +1,130 @@
+version: '3.8'
+services:
+  file_server_nginx:
+    image: nginx:1.19-alpine
+    restart: unless-stopped
+    tty: true
+    networks:
+      - file-server-network
+    volumes:
+      - ./configs/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - static-content:/usr/share/file_server/static:ro
+      - log-nginx:/var/log/nginx
+  file_server_ha:
+    image: haproxy:lts
+    depends_on:
+      - file_server_app_1
+      - file_server_app_2
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8080:8080"
+      - "8989:8989"
+    networks:
+      - file-server-network
+    volumes:
+      - ./configs/ha/haproxy.conf:/usr/local/etc/haproxy/haproxy.cfg:ro
+  file_server_postgres:
+    image: postgres:12
+    environment:
+      PGDATA: /data/postgres
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 7rbjTcp2FISU7YByE66xIYDcNF7PQYK9SRGFniJNSnk
+      FILE_SERVER_DATABASES_NAME: fileserver_db
+      FILE_SERVER_DATABASES_TEST_NAME: fileserver_db_test
+      FILE_SERVER_DATABASES_USER: file_admin
+      FILE_SERVER_DATABASES_PASSWORD: KLclWoEl5BoDtQVsL8RB3HIhH
+      FILE_SERVER_DATABASES_HOST: file_server_postgres
+    volumes:
+      - ./db-init-scripts:/docker-entrypoint-initdb.d
+      - data-postgres:/data/postgres
+    networks:
+      - file-server-network
+    restart: always
+  file_server_redis:
+    image: redis:6-buster
+    entrypoint: redis-server --rdbcompression yes --dbfilename file_server.rdb --save 300 1 --timeout 0
+    volumes:
+      - data-redis:/data
+    networks:
+      - file-server-network
+    restart: always
+  file_server_app_1:
+    env_file:
+      - ./configs/env/app.env
+    image: file-server
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
+    depends_on:
+      - file_server_redis
+      - file_server_postgres
+    networks:
+      - file-server-network
+    volumes:
+      - migration-file:/file-server/file_server/apps/file/migrations
+      - data-locale:/file-server/file_server/locale
+      - log-uwsgi:/var/log/file_server
+      - static-content:/file-server/file_server/static
+      - media-content:/usr/share/file_server/media
+    environment:
+      FILE_SERVER_DATABASES_NAME: fileserver_db
+      FILE_SERVER_DATABASES_TEST_NAME: fileserver_db_test
+      FILE_SERVER_DATABASES_USER: file_admin
+      FILE_SERVER_DATABASES_PASSWORD: KLclWoEl5BoDtQVsL8RB3HIhH
+      FILE_SERVER_DATABASES_HOST: file_server_postgres
+      FILE_SERVER_DATABASES_PORT: 5432
+      FILE_SERVER_REDIS_HOST: redis://file_server_redis
+      FILE_SERVER_REDIS_PORT: 6379
+      FILE_SERVER_CACHE_DATABASE: 1
+      FILE_SERVER_CACHE_PREFIX: fls
+      FILE_SERVER_STATIC_URL: /static/
+      FILE_SERVER_STATIC_DIRS: staticfiles
+      FILE_SERVER_STATIC_ROOT: static
+      FILE_SERVER_MEDIA_URL: /files/
+      FILE_SERVER_MEDIA_ROOT: /usr/share/file_server/media
+    restart: unless-stopped
+  file_server_app_2:
+    env_file:
+      - ./configs/env/app.env
+    image: file-server
+    depends_on:
+      - file_server_redis
+      - file_server_postgres
+    networks:
+      - file-server-network
+    volumes:
+      - migration-file:/file-server/file_server/apps/file/migrations
+      - data-locale:/file-server/file_server/locale
+      - log-uwsgi:/var/log/file_server
+      - static-content:/file-server/file_server/static
+      - media-content:/usr/share/file_server/media
+    environment:
+      FILE_SERVER_DATABASES_NAME: fileserver_db
+      FILE_SERVER_DATABASES_TEST_NAME: fileserver_db_test
+      FILE_SERVER_DATABASES_USER: file_admin
+      FILE_SERVER_DATABASES_PASSWORD: KLclWoEl5BoDtQVsL8RB3HIhH
+      FILE_SERVER_DATABASES_HOST: file_server_postgres
+      FILE_SERVER_DATABASES_PORT: 5432
+      FILE_SERVER_REDIS_HOST: redis://file_server_redis
+      FILE_SERVER_REDIS_PORT: 6379
+      FILE_SERVER_CACHE_DATABASE: 1
+      FILE_SERVER_CACHE_PREFIX: fls
+      FILE_SERVER_STATIC_URL: /static/
+      FILE_SERVER_STATIC_DIRS: staticfiles
+      FILE_SERVER_STATIC_ROOT: static
+      FILE_SERVER_MEDIA_URL: /files/
+      FILE_SERVER_MEDIA_ROOT: /usr/share/file_server/media
+    restart: unless-stopped
+networks:
+  file-server-network:
+    driver: bridge
+volumes:
+  media-content:
+  static-content:
+  log-nginx:
+  log-uwsgi:
+  data-postgres:
+  data-redis:
+  data-locale:
+  migration-file:
