@@ -80,15 +80,15 @@ magpie uses `API Key` to handle authentication and authorization, each user shou
 
 - `curl -F file=@/home/file.zip http://fileserver.example/api/v1/files/ -H "Authorization: bearer 5440d70ba9044e8a983d1f30e68fa031"`
 
-### Usage examples for python:
+### APIs:
 
-#### Tokens
+#### Consumers
 
-1. Create token
+1. Create consumer
 
 ```shell script
 curl --request POST \
-  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --url http://127.0.0.1:9596/api/v1/consumers \
   --header 'Authorization: Bearer {admin_token}'
 ```
 
@@ -96,7 +96,7 @@ curl --request POST \
 
 ```shell script
 curl --request PATCH \
-  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --url http://127.0.0.1:9596/api/v1/consumers/{name} \
   --header 'Authorization: Bearer {admin_token}'
 ```
 
@@ -104,7 +104,7 @@ curl --request PATCH \
 
 ```shell script
 curl --request GET \
-  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --url http://127.0.0.1:9596/api/v1/consumers \
   --header 'Authorization: Bearer {admin_token}'
 ```
 
@@ -112,7 +112,7 @@ curl --request GET \
 
 ```shell script
 curl --request DELETE \
-  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --url http://127.0.0.1:9596/api/v1/consumers/{name} \
   --header 'Authorization: Bearer {admin_token}'
 ```
 
