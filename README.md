@@ -1,9 +1,6 @@
-# File server
+# magpie
 
-This file server is used to upload and download files using `REST APIs`
-
-  - `POST` - upload a file
-  - `GET` - to retrieve a file
+`magpie` is a file server for uploading and downloading files using `REST APIs` in system files.
 
 ### Requirements
 
