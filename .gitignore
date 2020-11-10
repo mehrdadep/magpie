@@ -1,6 +1,6 @@
 # PyCharm IDE.
 .idea/
-file_server/.idea/
+magpie/.idea/
 
 # VsCode
 .vscode/
@@ -51,15 +51,15 @@ coverage.xml
 reports/
 
 # nss stuff
-!file_server/log/file_server/
-file_server/log/file_server/*
+!magpie/log/magpie/
+magpie/log/magpie/*
 
-!file_server/tmp/upload/
-file_server/tmp/upload/*
-!file_server/tmp/session/
-file_server/tmp/session/*
+!magpie/tmp/upload/
+magpie/tmp/upload/*
+!magpie/tmp/session/
+magpie/tmp/session/*
 
-file_server/settings/local.env
+magpie/settings/local.env
 datetime
 django.contrib.auth
 dump.rdb
@@ -71,6 +71,6 @@ Pipfile.lock
 .directory
 
 # Migration Files.
-file_server/**/migrations/*.py
-!file_server/**/migrations/__init__.py
+magpie/**/migrations/*.py
+!magpie/**/migrations/__init__.py
 runserver.sh
