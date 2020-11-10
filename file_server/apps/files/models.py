@@ -5,6 +5,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+from file_server.core.helper import Helper
+
 
 def get_file_path(instance, filename):
     return os.path.join(
@@ -47,21 +49,25 @@ class File(models.Model):
         ordering = ['-created_at']
 
 
-class ApiKey(models.Model):
+class AuthToken(models.Model):
     owner = models.OneToOneField(
         User,
-        related_name='api_keys',
+        related_name='token',
         on_delete=models.CASCADE,
         null=False,
     )
-    api_key = models.CharField(
-        max_length=128,
+    token = models.CharField(
+        max_length=512,
         null=False,
         blank=False,
-        default=uuid.uuid4().hex,
+        default=Helper.generate_token(),
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def username(self):
+        return self.owner.username
 
     class Meta:
         ordering = ['-created_at']

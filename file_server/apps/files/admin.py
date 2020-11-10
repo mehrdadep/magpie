@@ -3,8 +3,9 @@ import uuid
 from django.contrib import admin
 from django.utils.translation import gettext as _
 
-from file_server.apps.files.models import ApiKey
+from file_server.apps.files.models import AuthToken
 from file_server.apps.files.models import File
+from file_server.core.helper import Helper
 
 
 @admin.register(File)
@@ -29,18 +30,18 @@ class FileAdmin(admin.ModelAdmin):
             delete_object.delete()
 
 
-@admin.register(ApiKey)
-class ApiKeyAdmin(admin.ModelAdmin):
+@admin.register(AuthToken)
+class AuthTokenAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
-    search_fields = ['api_key', 'owner__username']
+    search_fields = ['token', 'owner__username']
     list_display = (
         'owner',
-        'api_key',
+        'token',
         'created_at',
         'updated_at',
     )
     readonly_fields = [
-        'api_key',
+        'token',
         'created_at',
         'updated_at',
     ]
@@ -48,7 +49,7 @@ class ApiKeyAdmin(admin.ModelAdmin):
         ('Base Information', {
             'fields': (
                 'owner',
-                'api_key',
+                'token',
             ),
         }),
         ('Dates', {
@@ -64,9 +65,9 @@ class ApiKeyAdmin(admin.ModelAdmin):
     actions = ['update_token', ]
 
     def update_token(self, request, queryset):
-        for api_key in queryset:
-            api_key.api_key = uuid.uuid4().hex
-            api_key.save()
+        for token in queryset:
+            token.token = Helper.generate_token()
+            token.save()
 
         self.message_user(
             request,
