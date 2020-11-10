@@ -209,6 +209,9 @@ STATIC_ROOT = os.path.join(
 # 500MB - 429916160
 # MAX_UPLOAD_SIZE represented in bytes
 FILE_SERVER = {
+    'ADMIN_API_KEY': os.getenv(
+        'FILE_SERVER_ADMIN_API_KEY',
+    ),
     'CACHE_EXPIRY': int(os.getenv(
         'FILE_SERVER_CACHE_EXPIRY',
         86400,

@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from rest_framework.pagination import LimitOffsetPagination
 
 from file_server.apps.files.models import File
-from file_server.apps.files.versions.v1.serializers.serializers import (
+from file_server.apps.files.versions.v1.serializers.file import (
     FileSerializer,
     FilesSerializer,
 )

@@ -79,12 +79,47 @@ Go to `docker` directory and run `docker-compose up -d`:
 
 File server uses `API Key` to handle authentication and authorization, each user should have an `API Key` and use it in `HTTP_Authorization` with this format:
 
-`ApiKey-Files API_KEY`. e.g.:
+`bearer API_KEY`. e.g.:
 
-- `curl -F file=@/home/file.zip http://fileserver.example/api/v1/files/ -H "Authorization: ApiKey-Files 5440d70ba9044e8a983d1f30e68fa031"`
+- `curl -F file=@/home/file.zip http://fileserver.example/api/v1/files/ -H "Authorization: bearer 5440d70ba9044e8a983d1f30e68fa031"`
 
 #### Usage examples for python:
 
+##### Tokens
+
+1. Create token
+
+```shell script
+curl --request POST \
+  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --header 'Authorization: Bearer {admin_token}'
+```
+
+2. Update token
+
+```shell script
+curl --request PATCH \
+  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --header 'Authorization: Bearer {admin_token}'
+```
+
+3. Get token
+
+```shell script
+curl --request GET \
+  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --header 'Authorization: Bearer {admin_token}'
+```
+
+4. Revoke token
+
+```shell script
+curl --request DELETE \
+  --url http://127.0.0.1:9596/api/v1/tokens/{username} \
+  --header 'Authorization: Bearer {admin_token}'
+```
+
+##### Files
 1. Get files:
 
 ```shell
@@ -93,7 +128,7 @@ import requests
 url = "http://127.0.0.1:9596/api/v1/files/"
 
 payload = ""
-headers = {'authorization': 'ApiKey-Files a55ac299eadc445e91f139758ad44ce0'}
+headers = {'authorization': 'bearer a55ac299eadc445e91f139758ad44ce0'}
 
 response = requests.request("GET", url, data=payload, headers=headers)
 ```
@@ -107,7 +142,7 @@ url = "http://127.0.0.1:9596/api/v1/files/"
 
 payload = "-----011000010111000001101001\r\nContent-Disposition: form-data; name=\"file\"\r\n\r\n\r\n-----011000010111000001101001--\r\n"
 headers = {
-    'authorization': "ApiKey-Files 5440d70ba9044e8a983d1f30e68fa031",
+    'authorization': "bearer 5440d70ba9044e8a983d1f30e68fa031",
     'content-type': "multipart/form-data; boundary=---011000010111000001101001"
     }
 
@@ -123,7 +158,7 @@ url = "http://127.0.0.1:9596/api/v1/files/5e740209-0dde-483a-b542-bf1ea153446b/"
 
 payload = ""
 headers = {
-    'authorization': "ApiKey-Files 5440d70ba9044e8a983d1f30e68fa031",
+    'authorization': "bearer 5440d70ba9044e8a983d1f30e68fa031",
 }
 
 response = requests.request("DELETE", url, data=payload, headers=headers)
@@ -139,7 +174,7 @@ import requests
 url = "http://127.0.0.1:9596/api/v1/files/d46db92a-8a84-4ae5-a39f-44e810dcfa62/"
 
 payload = ""
-headers = {'authorization': 'ApiKey-Files 5440d70ba9044e8a983d1f30e68fa031'}
+headers = {'authorization': 'bearer 5440d70ba9044e8a983d1f30e68fa031'}
 
 response = requests.request("GET", url, data=payload, headers=headers)
 ```
